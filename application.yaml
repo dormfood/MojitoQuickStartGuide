@@ -1,0 +1,62 @@
+---
+# YAML supports commenting, JSON doesn't
+- settings:
+  - master
+  # "master" setting is the default context. If other context is specified, the attributes here will be overwritten
+  appPort: 8000
+  # Customize port to 8000
+  builds:
+    html5app:
+      # Config when building HTML5 offline app
+      attachManifest: true
+      forceRelativePaths: true
+      urls:
+      - /read.html
+  cacheViewTemplates: false
+  specs:
+  # Instances declarations
+    _frame:
+      type: HTMLFrameMojit
+      # HTMLFrameMojit is a handy way to help you create HTML skelton
+      config:
+        deploy: true
+        # Deploy = true for binder to be executed
+        title: Quickstart Guide
+        # HTML header title
+        assets:
+          top:
+            blob:
+            - <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            css:
+            - /static/Frame/assets/reset.css
+    shelf:
+      base: _frame
+      # "base" will adopt the setting from specified instance
+      config:
+        child:
+          type: Shelf
+          # Put your mojit under a child of HTMLFrameMojit
+          # Mojit name by default will be the name of the folder. Can be specified in mojit's package.json
+          config:
+            assets:
+              top:
+                css:
+                - /static/Shelf/assets/shelf.css
+    read:
+      base: _frame
+      config:
+        title: Quickstart Guide » Read
+        # Overwriting HTML header title
+        child:
+          type: Read
+          config:
+            assets:
+              top:
+                css:
+                - /static/Read/assets/read.css
+- settings:
+  - device:opera-mini
+  # Another setting. Setting always contain an array
+  selector: opera-mini
+  # Selector is required to generate device specific views/CSS
+...

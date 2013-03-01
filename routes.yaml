@@ -1,0 +1,12 @@
+---
+- settings:
+  - master
+  /:
+  # Route instance name. Not the actual URI
+    call: shelf.index
+    path: /(|index.html)
+    # Actual URI. (Either / or /index.html will match in this case)
+  /read.html:
+    call: read.index
+    path: /read.html
+...

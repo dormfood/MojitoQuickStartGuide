@@ -1,0 +1,275 @@
+code {
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+
+ font-size: 100%;             /* Smallest font for code block */
+}
+
+.container {
+    position: relative;
+    width: 1023px;
+    height: 748px;
+    overflow: hidden;
+	margin: 2em auto;
+}
+
+#spinner {
+    position: absolute;
+    bottom: 30px;
+    left: 40px;
+    font-family: verdana, sans-serif;
+    color: #777;
+    font-size: 200%;
+}
+
+.hidden {
+    display: none;
+}
+
+.container .main-sv {
+    position: relative;
+    display: -webkit-box;
+    display: -moz-box;
+}
+
+.container .main-sv .item-sv {
+    width: 1023px;
+    height: 748px;
+    overflow: hidden;
+}
+
+.container .main-sv .item-sv .content-box {
+    position: relative;
+    margin: 20px;
+    padding: 20px;
+    width: 940px;
+    height: 668px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+.container .main-sv .item-sv .content-box .content {
+    margin: 50px 20px;
+}
+
+.container .contents-nav {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.container .content-pagecnt {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #888;
+}
+
+.container .url-nav {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.container .contents-nav a, .container .url-nav a, .container .iframe-nav a {
+    display: block;
+    padding: 5px 10px;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.container .contents-nav a:hover {
+    background: #eee;
+}
+
+.container .nav {
+    position: absolute;
+    top: 690px;
+    width: 1023px;
+    text-align: center;
+}
+
+.container .nav span {
+    font-size: 200%;
+    color: #eee;
+}
+
+.container .nav span.selected {
+    color: #777;
+}
+
+.container .iframe {
+    position: absolute;
+    top: 748px;
+    left: 0px;
+    width: 1023px;
+    height: 748px;
+    overflow: hidden;
+    background: #fff;
+    border-top: 2px solid #777;
+}
+
+.container .iframe-header {
+    position: relative;
+    height: 65px;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(235,235,235)),
+        color-stop(0.63, rgb(255,255,255))
+    );
+    background-image: -moz-linear-gradient(
+        center bottom,
+        rgb(235,235,235) 0%,
+        rgb(255,255,255) 63%
+    );
+    border-bottom: 5px solid #777;
+}
+
+.container .iframe-nav {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+}
+
+.container .iframe iframe {
+    position: absolute;
+    top: 70px;
+    right: 0px;
+    width: 1023px;
+    height: 678px;
+    border-top: 0px solid #ccc;
+}
+
+.content-box .content-title {
+    position: absolute;
+    top: 30px;
+    width: 940px;
+    color: #888;
+    text-align: center;
+}
+
+.content-box .image-blocker {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 50px;
+    width: 1023px;
+    background: #fff;
+}
+
+.style-simple {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    background: #fff;
+    color: #555;
+    font-size: 180%;
+    line-height: 190%;
+    padding: 20px;
+}
+.style-simple li {
+  list-style-type: square;
+  list-style-position: inside;
+}
+.style-simple li b {
+  font-weight: 800;
+}
+.style-simple a {
+    color: blue;
+    text-decoration: underline;
+}
+
+.style-simple * {
+    margin-bottom: 16px;
+    border: none;
+    background: none;
+}
+
+.style-simple .images {
+    display: none;
+}
+
+.style-simple h1, .style-simple h2, .style-simple h3, .style-simple h4 {
+    display: block;
+    color: #222;
+    width: 100%;
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+.style-simple h2 {
+    border-bottom: 1px solid #333;
+    font-size: 1.3em;
+}
+
+.style-simple h3, .style-simple h4 {
+    font-size: 1.2em;
+}
+.style-simple blockquote {
+    margin-left: 3em;
+    margin-right: 3em;
+}
+
+.style-simple.xx-large {
+    font-size: 100%;
+    padding: 40px 60px;
+}
+
+.style-simple.x-large {
+    font-size: 100%;
+    padding: 40px 60px;
+}
+
+.style-simple.large {
+    font-size: 100%;
+    padding: 40px 60px;
+}
+
+.style-simple.medium {
+    font-size: 100%;
+    padding: 20px 60px;
+}
+
+
+.style-simple em {
+    font-size: 70%;
+<<<<<<< HEAD
+	font-style:italic;
+=======
+    font-style:italic;
+>>>>>>> ca413d64fca1d831397e48fde530a908f2b2bcee
+}
+
+.link-prev, .link-next {
+    position: absolute;
+    z-index: 10000;
+    display: block;
+    padding: 10px 20px;
+    font-size: 300%;
+    text-decoration: none;
+    color: #ccc;
+}
+
+.link-prev {
+    bottom: 0px;
+    left: 0px;
+}
+
+.link-next {
+    bottom: 0px;
+    right: 0px;
+}
+
+.hidden {
+    display: none;
+}
+
+.videobox {
+	margin: 1em auto;
+}

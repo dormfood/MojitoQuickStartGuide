@@ -1,0 +1,38 @@
+<div id="{{mojit_view_id}}" class="container">
+    <ul class="main-sv">
+        {{#each pages}}
+        <li class="item-sv">
+            <div class="content-box">
+                <div class="content-title">
+                    <h2>{{title}}</h2>
+                </div>
+				<div class="content-pagecnt">
+                    <h3>{{pageno}}/{{totalpage}}</h3>
+                </div>
+                <div class="contents-nav">
+                    <a href="index.html">Contents</a>
+                </div>
+                <div class="content style-simple {{css_style}}">
+                    <div id="desc">{{content}}</div>
+                </div>
+                <div>
+                    <a class="link-prev" href="{{prev}}">&laquo;</a>
+                    <a class="link-next" href="{{next}}">&raquo;</a>
+                </div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+    <div class="nav hidden">
+        {{#navdots}}
+        <span>&bull;</span>
+        {{/navdots}}
+    </div>
+    <div class="iframe hidden">
+        <div class="iframe-header">
+            <div class="iframe-nav">
+                <a href="#">Close</a>
+            </div>
+        </div>
+    </div>
+</div>
