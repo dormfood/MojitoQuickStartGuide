@@ -25,8 +25,8 @@ YUI.add('ShelfController', function (Y, NAME) {
                     vudata.tiles.push(book);
                 });
 
-		        ac.done(vudata);
-			};
+                ac.done(vudata);
+            };
 
         model.getBooks(afterGetBooks);
     }

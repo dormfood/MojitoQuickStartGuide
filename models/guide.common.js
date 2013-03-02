@@ -46,15 +46,15 @@ YUI.add('GuideModel', function (Y, NAME) {
             book = {};
 
        	Y.each(names, function (name) {
-			var book = {};
+            var book = {};
             if (name.match(/\.md$/)) { // Only catch the .md files
-				book.name = name.replace(/\.md$/, "");
-				book.title = getGuideTitle(name);
-	            books.push(book);
+                book.name = name.replace(/\.md$/, "");
+                book.title = getGuideTitle(name);
+                books.push(book);
             }
         });
 
-		callback(books);
+        callback(books);
     }
 
     /**
@@ -224,37 +224,35 @@ YUI.add('GuideModel', function (Y, NAME) {
      * @param {Function} callback The callback function to invoke.
      */
     function getBook(feedmeta, callback) {
-        var title = feedmeta.title + ".md"; // .md file name
+        var title = feedmeta.title + ".md", // .md file name
+            afterGetContent = function (err, content) {
+                var list = [],
+                    error = null;
 
-        function afterGetContent(err, content) {
-            var list = [],
-                error = null;
+                // Error?
+                if (err) {
+                    error = 'Ooo, content is damaged in ' + title;
+                } else {
+                    list = processResponse(title, content);
+                }
 
-            // Error?
-            if (err) {
-                error = 'Ooo, content is damaged in ' + title;
-            } else {
-                list = processResponse(title, content);
+                // Pass feedmeta through.
+                callback(error, list);
+            },
+            afterCheckTitle = function (good) {
+                var error = null;
+                if (good) {
+	                getContent(title, _afterGetContent);
+                } else {
+                    error = 'Ooo, could not fetch content for ' + title;
+
+                    // Sends back error
+                    callback(error);
+                }
             }
-
-            // Pass feedmeta through.
-            callback(error, list);
-        }
-
-        function afterCheckTitle(good) {
-            var error = null;
-            if (good) {
-	            getContent(title, afterGetContent);
-            } else {
-                error = 'Ooo, could not fetch content for ' + title;
-
-                // Sends back error
-                callback(error);
-            }
-        }
 
         // Check the existence of the topic
-        checkTitle(title, afterCheckTitle);
+        checkTitle(title, _afterCheckTitle);
     }
 
     /**
@@ -271,7 +269,7 @@ YUI.add('GuideModel', function (Y, NAME) {
             paginate: paginate,
             stripTags: stripTags,
             fetchGuideTitle: fetchGuideTitle,
-			getGuides: getGuides
+            getGuides: getGuides
         }
     };
 
