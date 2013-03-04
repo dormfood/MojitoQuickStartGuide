@@ -72,7 +72,8 @@ YUI.add('GuideModel', function (Y, NAME) {
      * @return {String} Plain text.
      */
     function stripTags(content) {
-        return content.replace(/<\/?\w+[\s\S]*?>/gmi, ' ');
+        // Regex to take out HTML tags
+        return content.replace(/<[^>]>/gmi, ' ');
     }
 
     /**
@@ -89,27 +90,26 @@ YUI.add('GuideModel', function (Y, NAME) {
             pages = [],
             newPage = true;  // if it's a start of a new page
 
-        // Topic divide
+        // Topic divide (Every h3 tag)
         while (restContent) {
-            // Topic starts with at least one "#"
-            //currentSection = restContent.split(/\n##[^#]/)[0];
-            currentSection = restContent.split(/\n#[^#]/)[0] || restContent.split(/\n##[^#]/)[0];
-            // Originally was '##' not '###'
+            // Grabbing all the contain from a h3 header (surrounded by ### in markdown)
+            currentSection = restContent.split(/\n###[^#]/)[0];
+
             if (restContent.split(/\n###/)[1]) {// More stuff coming up
                 restContent = "###" + restContent.split(/\n###/).slice(1).join('\n###');
-            } else {
+            } else {// No more stuff. Terminate loop in the next iteration.
                 restContent = "";
             }
 
-            if (!currentSection.match(/\w+/)) { // Empty Page
+            if (!currentSection.match(/\w+/)) { // Skip empty Page
                 continue;
             }
 
             // Weight divide
 	        while (currentSection) {
-	            // 20 lines
+	            // 20 lines (divided by \n)
 	            lines = currentSection.split(/\n/g).slice(0, 20).join('\n');
-	            // 200 words (approximately)
+	            // 200 words (approximately divided by space)
 	            words = currentSection.split(/ /g).slice(0, 200).join(' ');
 	        
 	            if (lines.length < words.length) {

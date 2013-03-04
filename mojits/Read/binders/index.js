@@ -68,58 +68,6 @@ YUI.add('ReadIndexBinder', function(Y, NAME) {
 
             // Show all dots.
             dotnode.removeClass('hidden');
-
-            this.down(viewnode.all('div.url-nav a'), iframe);
-            this.up(mojitNode.one('div.iframe-nav'), iframe);
-        },
-
-        /**
-         * Animate the source webpage iframe sliding down.
-         * @param {NodeList} nodes List of nodes to watch for click.
-         * @param {Node} iframe The iframe to animate.
-         */
-        down: function(nodes, iframe) {
-            nodes.on('click', function(ev) {
-                var src = ev.currentTarget.get('href'),
-                    anim = new Y.Anim({
-                        node: iframe,
-                        from: {top: 748},
-                        to: {top: -2}
-                    });
-
-                ev.preventDefault();
-                iframe.removeClass('hidden');
-
-                anim.set('easing', Y.Easing.easeOut);
-                anim.on('end', function() {
-                    iframe.appendChild('<iframe src="' + src + '"></iframe>');
-                });
-                anim.run();
-            });
-        },
-
-        /**
-         * Animate the source webpage iframe sliding up.
-         * @param {Node} node The node to watch for click.
-         * @param {Node} iframe The iframe to animate up.
-         */
-        up: function(node, iframe) {
-            node.on('click', function(ev) {
-                var anim = new Y.Anim({
-                        node: iframe,
-                        from: {top: -2},
-                        to: {top: 748}
-                    });
-
-                ev.preventDefault();
-                iframe.one('iframe').remove();
-
-                anim.set('easing', Y.Easing.easeOut);
-                anim.on('end', function() {
-                    iframe.addClass('hidden');
-                });
-                anim.run();
-            });
         }
     };
 
