@@ -10,7 +10,7 @@ div.container {
 
 div.logo-nav
 {
-	width: 228px;
+	width: 80vw;
 	margin: 0 10px;
 }
 
@@ -76,7 +76,6 @@ div.toc
     div.logo-nav
     {
         margin: 0 5px;
-        width: 175px;
     }
 
         div.logo-nav h1

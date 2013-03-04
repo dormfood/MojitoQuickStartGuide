@@ -9,7 +9,16 @@
 
 YUI.add('GuideModel', function (Y, NAME) {
     'use strict';
-    var ResourcePath = __dirname + '/../guides/'
+
+    /**
+     * Returns path to the data source.
+     * @return {String} path.
+     */
+    function getPath() {
+        var pathLib = require('path');
+        // In Node.js, __dirname contains the path to the current file
+        return pathLib.join(__dirname,'/../guides/');
+    }
 
     /**
      * Gets the titles of all the guides.
@@ -18,7 +27,7 @@ YUI.add('GuideModel', function (Y, NAME) {
     function getGuides(callback) {
         var fs = require('fs');
 
-        return fs.readdirSync(ResourcePath);
+        return fs.readdirSync(getPath());
     }
 
 	/**
@@ -30,7 +39,7 @@ YUI.add('GuideModel', function (Y, NAME) {
         var fs = require('fs'),
             content;
 
-        content = fs.readFileSync(ResourcePath + filename);
+        content = fs.readFileSync(getPath() + filename);
         return fetchGuideTitle(String(content)).title; // Extract heading content
     }
 
@@ -98,13 +107,15 @@ YUI.add('GuideModel', function (Y, NAME) {
 
             // Weight divide
 	        while (currentSection) {
-	            // 16 lines
-	            lines = currentSection.split(/\n/g).slice(0, 16).join('\n');
-	            // 160 words (approximately)
-	            words = currentSection.split(/ /g).slice(0, 160).join(' ');
+	            // 20 lines
+	            lines = currentSection.split(/\n/g).slice(0, 20).join('\n');
+	            // 200 words (approximately)
+	            words = currentSection.split(/ /g).slice(0, 200).join(' ');
 	        
 	            if (lines.length < words.length) {
-	                // Take 16 lines
+                    // Delete fetched context from currentSection
+                    currentSection = currentSection.replace(lines, "");
+	                // Take 20 lines
                     if (!lines.match(/\w+/g)) {// Empty Page
                         continue;
                     }
@@ -114,9 +125,10 @@ YUI.add('GuideModel', function (Y, NAME) {
                     } else {
                         pages.push("_continued from last page..._\n\n" + lines);
                     }
-	                currentSection = currentSection.replace(lines, "");
 	            } else {
-	                // Take 160 words
+                    // Delete fetched context from currentSection
+                    currentSection = currentSection.replace(words, "");
+	                // Take 200 words
                     if (!words.match(/\w+/g)) {// Empty Page
                         continue;
                     }
@@ -126,7 +138,6 @@ YUI.add('GuideModel', function (Y, NAME) {
                     } else {
                         pages.push("_continued from last page..._\n\n" + words);
                     }
-	                currentSection = currentSection.replace(words, "");
 	            }
 	        }
             newPage = true;
@@ -199,9 +210,9 @@ YUI.add('GuideModel', function (Y, NAME) {
         var pathLib = require('path'),
             fsLib = require('fs'),
             // Generate path
-            path = pathLib.join(ResourcePath, title);
+            path = pathLib.join(getPath(), title);
 
-        return fsLib.readFile(path, callback);
+        fsLib.readFile(path, callback);
     }
 
     /**
@@ -213,9 +224,10 @@ YUI.add('GuideModel', function (Y, NAME) {
         var pathLib = require('path'),
             fsLib = require('fs'),
             // Generate path
-            path = pathLib.join(ResourcePath, title);
+            path = pathLib.join(getPath(), title);
 
-        fsLib.exists(path, callback);
+        // For older node version, exists() belongs to path library
+        fsLib.exists ? fsLib.exists(path, callback) : pathLib.exists(path, callback);
     }
 
     /**
@@ -242,17 +254,16 @@ YUI.add('GuideModel', function (Y, NAME) {
             afterCheckTitle = function (good) {
                 var error = null;
                 if (good) {
-	                getContent(title, _afterGetContent);
+	                getContent(title, afterGetContent);
                 } else {
                     error = 'Ooo, could not fetch content for ' + title;
-
                     // Sends back error
                     callback(error);
                 }
             }
 
         // Check the existence of the topic
-        checkTitle(title, _afterCheckTitle);
+        checkTitle(title, afterCheckTitle);
     }
 
     /**
@@ -263,6 +274,7 @@ YUI.add('GuideModel', function (Y, NAME) {
         getBook: getBook,
         getBooks: getBooks,
         test: {
+            getPath: getPath,
             processResponse: processResponse,
             checkTitle: checkTitle,
             getContent: getContent,

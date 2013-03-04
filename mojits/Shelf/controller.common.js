@@ -20,6 +20,7 @@ YUI.add('ShelfController', function (Y, NAME) {
             },
             model = ac.models.get('GuideModel'),
             afterGetBooks = function (books) {
+
                 Y.each(books, function (book) {
                     book.link = 'read.html?name=' + encodeURIComponent(book.name);
                     vudata.tiles.push(book);

@@ -10,20 +10,6 @@
 YUI.add('ReadController', function(Y, NAME) {
     'use strict';
 
-    /**
-     * Choose text display size.
-     * @method size
-     * @private
-     * @param {Number} tlen page title character count.
-     * @param {Number} dlen page description character count.
-     * @return {String} Predefined css class.
-     */
-    function size(tlen, dlen) {
-        var weighted = (tlen * 1.4) + dlen * 2;
-        return ((weighted > 500) && 'medium') ||
-            ((weighted > 300) && 'large') ||
-            ((weighted > 200) && 'x-large') || 'xx-large';
-    }
 
     /**
      * Compose the data for the view.
@@ -51,14 +37,13 @@ YUI.add('ReadController', function(Y, NAME) {
                 page.totalpage = n;
                 page.prev = '&start=' + prev;
                 page.next = '&start=' + next;
-                page.css_style = size(page.title.length, page.content.length);
+                page.css_style = "medium";
                 vu.navdots.push({});
 
             } else {
                 Y.log('page ' + i + ' is missing data', 'warn');
             }
         });
-        //Y.log(vu);
         return vu;
     }
 
@@ -79,23 +64,27 @@ YUI.add('ReadController', function(Y, NAME) {
      * @param {ActionContext} ac The action context to operate on.
      */
     function index(ac) {
-        var feedmeta = {},
+        var bookmeta = {},
             model = ac.models.get('GuideModel'),
-            error;
+            error,
+            afterGetContent = function (error, content) {
+                var vu;
+
+                // Check to see if there's an error
+                if (error) {
+                    fail(error, ac);
+                } else {
+                    // Process the content so it can be displayed
+                    vu = compose(bookmeta, content);
+                    ac.done(vu);
+                }
+            };
 
         // Fill in feed metas
-        feedmeta.title = ac.params.merged('name');
-
-        // Process the content so it can be displayed
-        function afterGetContent(error, content) {
-            var vu = compose(feedmeta, content);
-
-            // Return composed view if no error
-            return error ? fail(error, ac) : ac.done(vu);
-        }
+        bookmeta.title = ac.params.merged('name');
 
         // Ask model for content, or display error.
-        return error ? fail(error, ac) : model.getBook(feedmeta, afterGetContent);
+        model.getBook(bookmeta, afterGetContent);
     }
 
     /**
@@ -105,7 +94,6 @@ YUI.add('ReadController', function(Y, NAME) {
     Y.namespace('mojito.controllers')[NAME] = {
         index: index,
         test: {
-            size: size,
             compose: compose
         }
     };
