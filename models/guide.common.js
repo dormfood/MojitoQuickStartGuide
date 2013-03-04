@@ -175,7 +175,9 @@ YUI.add('GuideModel', function (Y, NAME) {
             list = [],
             guide_title_result,
             title = "",
-            error = null;
+            error = null,
+            // Markdown requires node module installing. Please run "npm i" from project folder.
+            md = require("node-markdown").Markdown;
 
         guide_title_result = fetchGuideTitle(content);
         title = guide_title_result.title;
@@ -187,7 +189,8 @@ YUI.add('GuideModel', function (Y, NAME) {
 
                 page = {
                     title: Y.Lang.trim(title),
-                    content: stripTags(pages[i])
+                    // Stript existing HTML tags, then convert into markdowns
+                    content: md(stripTags(pages[i]))
                 };
 
                 if (page.title && page.content) {

@@ -37,12 +37,6 @@ YUI.add('ReadIndexBinder', function(Y, NAME) {
             // Remove the nav links, since presumably we have js at this point.
             mojitNode.all('a.link-prev, a.link-next').addClass('hidden');
 
-            // Convert markdowns into html
-            viewnodes.each(function(node) {
-                Y.log(node.one("#desc").getHTML());
-                node.one('#desc').setHTML(Y.Markdown.toHTML(node.one('#desc').getHTML()));
-            });
-      
             // Setup scrollview.
             // @see http://yuilibrary.com/yui/docs/api/classes/ScrollView.html
             Y.use('scrollview', 'scrollview-paginator', function(YY) {
@@ -133,6 +127,5 @@ YUI.add('ReadIndexBinder', function(Y, NAME) {
     'anim',
     'node-event-delegate',
     'scrollview',
-    'scrollview-paginator',
-    'gallery-markdown'
+    'scrollview-paginator'
 ]});

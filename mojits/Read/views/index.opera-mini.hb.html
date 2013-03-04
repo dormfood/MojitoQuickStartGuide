@@ -19,31 +19,28 @@ function nextPage( addon) {
 <body>
 <div id="{{mojit_view_id}}" class="container">
     <ul class="main-sv">
-        {{#stories}}
+        {{#each pages}}
         <li class="item-sv">
             <div class="content-box">
                 <div class="content-title">
-                    <h2>{{feedname}}</h2>
+                    <h2>{{title}}</h2>
+                </div>
+                <div class="content-pagecnt">
+                    <h3>{{pageno}}/{{totalpage}}</h3>
                 </div>
                 <div class="contents-nav">
                     <a href="index.html">Contents</a>
                 </div>
-                <div class="url-nav">
-                    <a href="{{link}}" target="blank">Source</a>
+                <div class="content style-simple {{css_style}}">
+                    <div id="desc">{{{content}}}</div>
                 </div>
-                <div class="content style-simple *">
-                    <h3>{{{title}}}</h3>
-                    <div id="desc">
-                        {{{description}}}
-                    </div>
-                </div>
-                <div class="nav-arrow">
-                    <a class="link-prev" href="javascript:nextPage('{{prev}}');">&laquo;</a>
-                    <a class="link-next" href="javascript:nextPage('{{next}}');">&raquo;</a>
+                <div>
+                    <a class="link-prev" href="{{prev}}">&laquo;</a>
+                    <a class="link-next" href="{{next}}">&raquo;</a>
                 </div>
             </div>
         </li>
-        {{/stories}}
+        {{/each}}
     </ul>
     <div class="nav hidden">
         {{#navdots}}

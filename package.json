@@ -19,7 +19,7 @@
     ],
     "yahoo": {
         "custodian":{
-            "email": "chenghan@yahoo-inc.com",
+            "email": "devel-ydesignmojits@yahoo-inc.com",
 			"url": "http://twiki.corp.yahoo.com/view/Cocktails/GodmotherDocs"
 	    },
         "bugzilla": {
@@ -32,6 +32,7 @@
         "npm": "> 1.0"
     },
     "dependencies": {
-        "mojito": "0.5.2"
+        "mojito": ">0.5.2",
+        "node-markdown": "*"
     }
 }
