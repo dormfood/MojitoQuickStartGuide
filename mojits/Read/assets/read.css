@@ -1,64 +1,47 @@
-code {
- white-space: pre-wrap;       /* css-3 */
- white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
- white-space: -pre-wrap;      /* Opera 4-6 */
- white-space: -o-pre-wrap;    /* Opera 7 */
- word-wrap: break-word;       /* Internet Explorer 5.5+ */
+/*
+ * Copyright (c) 2011-2013, Yahoo! Inc.  All rights reserved.
+ * Copyrights licensed under the New BSD License.
+ * See the accompanying LICENSE file for terms.
+ */
 
- font-size: 100%;             /* Smallest font for code block */
+.container p {
+    padding-bottom: 20px;
+}
+
+.container ul {
+    padding-bottom: 0px;
 }
 
 .container {
     position: relative;
-    width: 1023px;
-    height: 748px;
     overflow: hidden;
-	margin: 2em auto;
-}
-
-#spinner {
-    position: absolute;
-    bottom: 30px;
-    left: 40px;
-    font-family: verdana, sans-serif;
-    color: #777;
-    font-size: 200%;
 }
 
 .hidden {
     display: none;
 }
 
-.container .main-sv {
-    position: relative;
-    display: -webkit-box;
-    display: -moz-box;
-}
-
-.container .main-sv .item-sv {
-    width: 1023px;
-    height: 748px;
+.container .content-box {
+    max-width: 100%;
     overflow: hidden;
-}
-
-.container .main-sv .item-sv .content-box {
+    padding: 0;
     position: relative;
-    margin: 20px;
-    padding: 20px;
-    width: 940px;
-    height: 668px;
-    overflow: hidden;
-    border: 1px solid #ccc;
+    background-color: white;
 }
 
-.container .main-sv .item-sv .content-box .content {
-    margin: 50px 20px;
+.container .content-box .content {
+    margin: 30px;
+    margin-bottom: 5px;
 }
 
 .container .contents-nav {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+    background-color: white;
+    position: fixed;
+    width:100%;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-bottom: 1px dotted #888;
+    text-align: center;
 }
 
 .container .content-pagecnt {
@@ -74,14 +57,15 @@ code {
     right: 20px;
 }
 
-.container .contents-nav a, .container .url-nav a, .container .iframe-nav a {
-    display: block;
+.container .contents-nav a, .container .url-nav a, .link-bottom a {
+    display: inline-block;
     padding: 5px 10px;
     color: #aaa;
     text-decoration: none;
     border-radius: 6px;
     border: 1px solid #ccc;
     background: #fff;
+    text-align: center;
 }
 
 .container .contents-nav a:hover {
@@ -104,56 +88,12 @@ code {
     color: #777;
 }
 
-.container .iframe {
-    position: absolute;
-    top: 748px;
-    left: 0px;
-    width: 1023px;
-    height: 748px;
-    overflow: hidden;
-    background: #fff;
-    border-top: 2px solid #777;
-}
-
-.container .iframe-header {
-    position: relative;
-    height: 65px;
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        color-stop(0, rgb(235,235,235)),
-        color-stop(0.63, rgb(255,255,255))
-    );
-    background-image: -moz-linear-gradient(
-        center bottom,
-        rgb(235,235,235) 0%,
-        rgb(255,255,255) 63%
-    );
-    border-bottom: 5px solid #777;
-}
-
-.container .iframe-nav {
-    position: absolute;
-    top: 18px;
-    right: 20px;
-}
-
-.container .iframe iframe {
-    position: absolute;
-    top: 70px;
-    right: 0px;
-    width: 1023px;
-    height: 678px;
-    border-top: 0px solid #ccc;
-}
-
 .content-box .content-title {
-    position: absolute;
-    top: 30px;
-    width: 940px;
-    color: #888;
+    color: #888888;
+    font-size: 180%;
+    padding-top: 70px;
     text-align: center;
+    top: 30px;
 }
 
 .content-box .image-blocker {
@@ -169,16 +109,35 @@ code {
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     background: #fff;
     color: #555;
-    font-size: 180%;
-    line-height: 190%;
+    line-height: 150%;
     padding: 20px;
+    padding-bottom: 0px;
+    /* Auto hyphenation */
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
 }
-.style-simple li {
-  list-style-type: square;
-  list-style-position: inside;
+.style-simple li ul {
+    padding-top: 5px;
 }
-.style-simple li b {
-  font-weight: 800;
+.style-simple p {
+  padding-bottom: 5px;
+}
+.style-simple li p {
+    padding: 0px;
+    line-height: 100%;
+}
+.style-simple ol li {
+  list-style-type: decimal;
+  padding: 0px;
+  line-height: 100%;
+  margin-left: 1em;
+}
+.style-simple ul li {
+  list-style-type: disc;
+  line-height: 100%;
+  padding: 0px;
+  margin-left: 1em;
 }
 .style-simple a {
     color: blue;
@@ -196,6 +155,7 @@ code {
 }
 
 .style-simple h1, .style-simple h2, .style-simple h3, .style-simple h4 {
+    padding-top: 5px;
     display: block;
     color: #222;
     width: 100%;
@@ -204,7 +164,7 @@ code {
 }
 
 .style-simple h2 {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #CCCCCC;
     font-size: 1.3em;
 }
 
@@ -238,32 +198,46 @@ code {
 
 
 .style-simple em {
-    font-size: 70%;
-<<<<<<< HEAD
+    font-size: 110%;
 	font-style:italic;
-=======
-    font-style:italic;
->>>>>>> ca413d64fca1d831397e48fde530a908f2b2bcee
 }
 
-.link-prev, .link-next {
-    position: absolute;
-    z-index: 10000;
-    display: block;
+.style-simple pre code {
+    font-size: 120%;
+    line-height: 1.2em;
+}
+
+.link {
+    width: 10%;
     padding: 10px 20px;
-    font-size: 300%;
     text-decoration: none;
     color: #ccc;
+    top: 0px;
 }
 
 .link-prev {
-    bottom: 0px;
-    left: 0px;
+    right: 0px;
 }
 
 .link-next {
-    bottom: 0px;
-    right: 0px;
+    left: 0px;
+}
+
+.link-home {
+    width: 50%;
+}
+
+
+.link-bottom {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.link-bottom p {
+    /* title at footer */
+    display: inline-block;
+    color: #888;
+    font-size: 80%;
 }
 
 .hidden {
@@ -272,4 +246,18 @@ code {
 
 .videobox {
 	margin: 1em auto;
+}
+
+#desc pre {
+        border:1px dashed #E1E1E1;
+        color:#333344;
+        background:#FAFAFA;
+        font-family:monospace;
+        overflow:auto;
+        font-size: 90%;
+        line-height: 100%;
+        padding: 0.5em;
+}
+#desc strong {
+  font-weight: 600;
 }

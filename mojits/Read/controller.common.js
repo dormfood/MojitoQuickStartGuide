@@ -4,97 +4,143 @@
  * See the accompanying LICENSE file for terms.
  */
 
+/**
+Controller for Mojio
+
+After an application has been configured to use a mojit, the mojit controller can either do all of the work or 
+delegate the work to models and/or views. In the typical case, the mojit controller requests the model to 
+retrieve data and then the controller serves that data to the views.
+For more info, visit: http://developer.yahoo.com/cocktails/mojito/docs/intro/mojito_mvc.html#controllers
+**/
+
 /*jslint anon:true*/
 /*global YUI*/
 
+/**
+Displays guide content in a horizontally flickable scrollview.
+@class ReadController
+**/
 YUI.add('ReadController', function(Y, NAME) {
     'use strict';
-
+    var LIB_MD;// Markdown library
 
     /**
-     * Compose the data for the view.
-     * @method compose
-     * @private
-     * @param {Object} feedmeta Feed meta.
-     * @param {Array.<Object>} pages Individual pages of topic.
-     * @return {Object} Data for view renderer (mustache.js).
-     */
-    function compose(feedmeta, pages) {
-        var vu = {
-                feedname: feedmeta.title,
-                pages: pages || [],
-                navdots: []
-            },
-            n = Math.max(0, vu.pages.length);
+    Is used for library initializations under test environment.
 
-        Y.each(vu.pages, function(page, i) {
-            var curr = feedmeta.start + i,
-                prev = curr - 1 < 1 ? n : curr - 1,
-                next = curr + 1 > n ? 1 : curr + 1;
-
-            if (page.title && page.content) {
-                page.pageno = i + 1;
-                page.totalpage = n;
-                page.prev = '&start=' + prev;
-                page.next = '&start=' + next;
-                page.css_style = "medium";
-                vu.navdots.push({});
-
-            } else {
-                Y.log('page ' + i + ' is missing data', 'warn');
-            }
-        });
-        return vu;
+    @method init_test
+    @private
+    @param {Object} config The configuration object.
+    **/
+    function init_test(config) {
+        // Mocking the library for test purposes.
+        // Unit tests are run using "mojito test app app_root/".
+        // Make sure the attributes are set up correctly, otherwise don't set at all
+        if (config && config.test && config.test.libs) {
+            LIB_MD = config.test.libs.lib_md;
+        }
     }
 
     /**
-     * Something went wrong, render something.
-     * @method fail
-     * @private
-     * @param {String} error The error message.
-     * @param {ActionContext} ac The action context.
-     */
+    Composes the view with links to adjacent guides
+    return callback({
+                     title: guide title
+                     content: guide content
+                     prev: link to previous guide
+                     next: link to next guide
+                    })
+
+    @method compose
+    @private
+    @param {Object} guidemeta Guide meta.
+    @param {Object} result data of guide content.
+    @param {Object} action context.
+    @param (Function) callback for the final view data.
+    **/
+    function compose(guidemeta, data, ac, callback) {
+        var vu = {},
+            model = ac.models.get('GuideModel'),
+            afterGetAdjacentFiles = function (prevFilename, nextFilename) {
+                // Checks filenames are not null
+                if (prevFilename && nextFilename) {
+                    vu.prev = ac.url.make('read', 'index', {
+                        'filename': encodeURIComponent(prevFilename)
+                    });
+                    vu.next = ac.url.make('read', 'index', {
+                        'filename': encodeURIComponent(nextFilename)
+                    });
+                }
+
+                // Passes back view data
+                callback(vu);
+            };
+
+        // Sets up title and content of view data
+        vu.title = data.title;
+        // Render Markdown content into HTML
+        // Markdown requires node module installing. Please run "npm i" from project folder.
+        vu.content = LIB_MD ? LIB_MD(data.content) : require("node-markdown").Markdown(data.content);
+
+        // Gets filenames of all guides.
+        model.getAdjacentGuideFilenames(guidemeta.filename, afterGetAdjacentFiles);
+    }
+
+    /**
+    Something went wrong, RENDERS 'oh no' message.
+    @method fail
+    @private
+    @param {String} error The error message.
+    @param {ActionContext} ac The action context.
+    **/
     function fail(error, ac) {
-        ac.done({pages: [{title: 'oh noes!', content: error}]});
+        ac.done({
+            // Localize program generated text. See .js files under lang/
+            title: ac.intl.lang("ERROR_TITLE"),
+            content: error
+        });
     }
 
     /**
-     * Load guide title in url, get data, display.
-     * @method index
-     * @param {ActionContext} ac The action context to operate on.
-     */
+    Loads guide's filename from URL, fetch the content from model and display it.
+    @method index
+    @param {ActionContext} ac The action context to operate on.
+    **/
     function index(ac) {
-        var bookmeta = {},
+        var guidemeta = {},
             model = ac.models.get('GuideModel'),
             error,
-            afterGetContent = function (error, content) {
-                var vu;
+            afterComposed = function(viewData) {
+                ac.done(viewData);
+            },
+            afterGetGuide = function (error, resultObj) {
+                // resultObj.title contains guide title
+                // resultObj.content contains HTML content
 
-                // Check to see if there's an error
+                // Checks to see if there's an error
                 if (error) {
                     fail(error, ac);
                 } else {
-                    // Process the content so it can be displayed
-                    vu = compose(bookmeta, content);
-                    ac.done(vu);
+                    // Normalize content
+                    compose(guidemeta, resultObj, ac, afterComposed);
                 }
             };
 
-        // Fill in feed metas
-        bookmeta.title = ac.params.merged('name');
+        // Fills in feed metas
+        guidemeta = ac.params.merged();
 
-        // Ask model for content, or display error.
-        model.getBook(bookmeta, afterGetContent);
+        // Asks model for content, or display error.
+        model.getGuide(guidemeta, afterGetGuide);
     }
 
     /**
-     * Display feed data in a horizontally flickable scrollview.
-     * @class ReadController
-     */
+    Register index method under controller.
+    Keep all other private functions under "test" for unit testing.
+    **/
     Y.namespace('mojito.controllers')[NAME] = {
         index: index,
         test: {
-            compose: compose
+            init_test: init_test,
+            compose: compose,
+            fail: fail
         }
     };
 
@@ -103,5 +149,7 @@ YUI.add('ReadController', function(Y, NAME) {
     'mojito-config-addon',
     'mojito-models-addon',
     'mojito-params-addon',
+    'mojito-url-addon',
+    'mojito-intl-addon',
     'GuideModel'
 ]});

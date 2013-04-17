@@ -4,7 +4,7 @@
 
 Mojito is a model-view-controller (MVC) application framework built on YUI 3 that 
 enables agile development of Web applications. Mojito allows developers to use a 
-combination of configuration and an MVC architecture to create applications. Because 
+combination of configuration and MVC architecture to create applications. Because 
 client and server components are both written in JavaScript, Mojito can run on the 
 client (browser) or the server (Node.js).
 
@@ -12,7 +12,7 @@ client (browser) or the server (Node.js).
 ## Why Mojito? ##
 
 
-- **One Language** - JavaScript on both the client and server.
+- **One Language** - JavaScript runs on both the client and server.
 - __Two Runtimes__ - Your application code can be configured to run on the server or be 
   deployed to the client.
 - __Views for Different Devices__ - You create custom views for different devices, and Mojito 

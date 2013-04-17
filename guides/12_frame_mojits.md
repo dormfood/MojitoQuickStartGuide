@@ -31,20 +31,20 @@ the `<title>` element and the content created by the frame mojit into the `<body
 element.
 
     [
-        {
-            "settings": [ "master" ],
-            "specs": {
-                "frame" : {
-                    "type" : "HTMLFrameMojit",
-                    "config": {
-                        "title": "Title of HTML page",
-                        "child" : {
-                            "type" : "framed"
-                        }
-                    }
-                }
+      {
+        "settings": [ "master" ],
+        "specs": {
+          "frame" : {
+            "type" : "HTMLFrameMojit",
+            "config": {
+              "title": "Title of HTML page",
+              "child" : {
+                 "type" : "framed"
+              }
             }
+          }
         }
+      }
     ]
 
 ## LazyLoadMojit ##
@@ -67,35 +67,37 @@ some child mojits (`myLazyMojit` in this case) and have others load immediately
 such as `myActiveMojit`:
 
     [
-        {
-            "settings": [ "master" ],
-            "specs": {
-                "frame": {
-                    "type": "HTMLFrameMojit",
-                    "config": {
-                        "deploy": true,
-                        "child": {
-                            "type": "Container",
-                            "config": {
-                                "children": {
-                                    "myLazyMojit": {
-                                        "type": "LazyPants",
-                                        "action": "hello",
-                                        "defer": true
-                                    },
-                                    "myActiveMojit": {
-                                        "type": "GoGetter",
-                                    }
-                                }
-                            }
-                        }
+      {
+        "settings": [ "master" ],
+        "specs": {
+          "frame": {
+            "type": "HTMLFrameMojit",
+            "config": {
+              "deploy": true,
+              "child": {
+                "type": "Container",
+                "config": {
+                  "children": {
+                    "myLazyMojit": {
+                      "type": "LazyPants",
+                      "action": "hello",
+                      "defer": true
+                    },
+                    "myActiveMojit": {
+                      "type": "GoGetter",
                     }
+                  }
                 }
+              }
             }
+          }
         }
+      }
     ]
 
 ## Learn More ##
 
 * [Frame Mojits](http://developer.yahoo.com/cocktails/mojito/docs/topics/mojito_frame_mojits.html)
+* [Code Examples: Using the HTML Frame Mojit](http://developer.yahoo.com/cocktails/mojito/docs/code_exs/htmlframe_view.html)
+* [Code Examples: Attaching Assets with HTMLFrameMojit](http://developer.yahoo.com/cocktails/mojito/docs/code_exs/framed_assets.html)
 * [Creating Custom Frame Mojits](http://developer.yahoo.com/cocktails/mojito/docs/topics/mojito_frame_mojits.html#creating-custom-frame-mojits)

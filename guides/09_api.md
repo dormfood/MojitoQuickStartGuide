@@ -10,7 +10,7 @@ Context:
 
 * `ac.done(data,[{view_name}])` - sends data to the templates and optionally can
   specify a view.
-* `ac.error` - reports errors.
+* `ac.error(err)` - reports errors.
 
 See the [ActionContext Class](http://developer.yahoo.com/cocktails/mojito/api/classes/ActionContext.html) 
 for the methods available from ``ac``.
@@ -54,15 +54,16 @@ The Action Context addons allow you to do the following:
 
 
 Our example controller below uses the `Params` addon to get
-the query string parameters.::
+the query string parameters:
 
     YUI.add('Foo', function(Y, NAME) {
-        Y.namespace('mojito.controllers')[NAME] = {
-            index: function(ac) {
-                var all_params = ac.params.url();
-            }
-        };
-        // Require the addon by adding the param name to the requires array
+      Y.namespace('mojito.controllers')[NAME] = {
+        index: function(ac) {
+          var all_params = ac.params.url();
+          ac.done({ params: all_params });
+        }
+      };
+      // Require the addon by adding the param name to the requires array
     }, '0.0.1', {requires: ['mojito', 'mojito-params-addon']});
 
 See the 

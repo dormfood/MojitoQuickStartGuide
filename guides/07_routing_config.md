@@ -10,14 +10,14 @@ that matches the mojit action name is executed.
 We'll cover the default routing Mojito creates for mojit actions and then
 show you how to configure single and multiple routes.
 
-## Default Route ## 
+## Default Route 
 
 When you create a mojit, Mojito will create the following route path
 for you: `{domain_name}:{port}/@{mojit_name}/{action}`
 
 For example, if you are locally running an application that has the
-mojit `myMojit`, you can make an HTTP to execute the `index` function of the mojit's 
-controller with the following URL: `http://localhost:8666/@myMojit/index`
+mojit `myMojit`, you can make an HTTP GET request to `http://localhost:8666/@myMojit/index`
+to execute the `index` function of the mojit's controller. 
 
 In general, you don't want to use the default routing except for testing, but 
 you should know that Mojito is creating an anonymous instance of your 
@@ -26,22 +26,21 @@ the `@` symbol prepended to the mojit name.
 
 ## Single Route ##
 
-
 To create a route, you need to create a mojit instance that can be mapped to a 
 path. In the `application.json` below, the `hello` instance of type 
 `HelloMojit` is defined.
 
 
     [
-        {
-            "settings": [ "master" ],
-            "appPort": 8666,
-            "specs": {
-                "hello": {
-                    "type": "HelloMojit"
-                }
-            }
+      {
+        "settings": [ "master" ],
+        "appPort": 8666,
+        "specs": {
+          "hello": {
+            "type": "HelloMojit"
+          }
         }
+      }
     ]
 
 The `hello` instance and a function in the `HelloMojit` controller can now 
@@ -50,14 +49,14 @@ the `index` function is called when an HTTP GET call is made on the root path:
 
 
     [
-        {
-            "settings": [ "master" ],
-            "hello index": {
-                "verbs": ["get"],
-                "path": "/",
-                "call": "hello.index"
-            }
+      {
+        "settings": [ "master" ],
+        "hello index": {
+          "verbs": ["get"],
+          "path": "/",
+          "call": "hello.index"
         }
+      }
     ]
 
 Instead of using the `hello` mojit instance defined in the `application.json` 
@@ -67,17 +66,16 @@ of `HelloMojit` is made by prepending "@" to the mojit type.
 
 
     [
-        {
-            "settings": [ "master" ],
-            "hello index": {
-                "verbs": ["get"],
-                "path": "/",
-                "call": "@HelloMojit.index",
-                "params": { "first_visit": true }
-            }
+      {
+        "settings": [ "master" ],
+        "hello index": {
+          "verbs": ["get"],
+          "path": "/",
+          "call": "@HelloMojit.index",
+          "params": { "first_visit": true }
         }
+      }
     ]
-
 
 
 ## Multiple Routes ##
@@ -87,25 +85,25 @@ To specify multiple routes, you create multiple route objects that contain
 
 
     [
-        {
-            "settings": [ "master" ],
-            "root": {
-                "verb": ["get"],
-                "path": "/*",
-                "call": "foo-1.index"
-            },
-            "foo_default": {
-                "verb": ["get"],
-                "path": "/foo",
-                "call": "foo-1.index"
-            },
-            "bar_default": {
-                "verb": ["get"],
-                "path": "/bar",
-                "call": "bar-1.index",
-                "params": { "page": 1, "log_request": true }
-            }
+      {
+        "settings": [ "master" ],
+        "root": {
+          "verb": ["get"],
+          "path": "/*",
+          "call": "foo-1.index"
+        },
+        "foo_default": {
+          "verb": ["get"],
+          "path": "/foo",
+          "call": "foo-1.index"
+        },
+        "bar_default": {
+          "verb": ["get"],
+          "path": "/bar",
+          "call": "bar-1.index",
+          "params": { "page": 1, "log_request": true }
         }
+      }
     ]
 
 The `routes.json` file above creates the following routes:

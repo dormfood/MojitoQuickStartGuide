@@ -2,18 +2,18 @@
 
 ## Prerequisites ##
 
-**System:** Unix-based system.
-**Software:** [Node.js (\&gt;= 0.6.0 \< 0.8)](http://nodejs.org/), [npm (> 1.0.0)](http://npmjs.org/)
+- **System:** Unix-based system.
+- **Software:** [Node.js (>= 0.6.0 < 0.8)](http://nodejs.org/), [npm (> 1.0.0)](http://npmjs.org/)
 
 
 ## Installation Steps ##
 
-1. Get Mojito from the npm registry and globally install Mojito so that it can be run from 
-   the command line. You may need to use `sudo` if you run into permission errors.
+1. Get Mojito from the [npm registry](https://npmjs.org/doc/registry.html) and globally install 
+   Mojito so that it can be run from the command line. You may need to use `sudo` if you run into permission errors.
+  
 
    `$ npm install mojito -g`
-
-1. Confirm that Mojito has been installed by running the help command.
+2. Confirm that Mojito has been installed by running the **help** command.
 
    `$ mojito help`
 
@@ -26,18 +26,16 @@
 ## Modify Your Application ##
 
 To make the application return a string we want, replace the code in 
-`mojits/myMojit/controller.server.js` with the following::
+`mojits/myMojit/controller.server.js` with the following:
 
 
     YUI.add('myMojit', function(Y, NAME) {
-  
-        Y.namespace('mojito.controllers')[NAME] = {
+      Y.namespace('mojito.controllers')[NAME] = {
+        index: function(ac) {
+          ac.done('Hello, world. I have created my first Mojito app at ' + (new Date()) + '.');
+        }
 
-            index: function(ac) {
-                ac.done('Hello, world. I have created my first Mojito app at ' + (new Date()) + '.');
-            }
-
-        };
+      };
     });
 
 
@@ -47,7 +45,8 @@ To make the application return a string we want, replace the code in
 
    `$ mojito start`
 
-1. Go to http://localhost:8666/@myMojit/index to see your application.
+1. Go to [http://localhost:8666/@myMojit/index/](http://localhost:8666/@myMojit/index) to see your application, which
+   just displays a welcome message.
 
 1. Stop your application by pressing **Ctrl-C**.
 

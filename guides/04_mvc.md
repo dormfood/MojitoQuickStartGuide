@@ -29,7 +29,7 @@ The controller is found in the `{app_name}/mojits/{mojit_name}` directory.
 ### Naming Convention ###
 
 Controllers use the following naming convention, where `{affinity}` can have one of 
-the following three difference affinities: `server`, `client`, or `common`
+the following three difference affinities: `server`, `client`, or `common`.
 
 `controller.{affinity}.js`
 
@@ -46,31 +46,30 @@ and a `requires` array for requiring dependencies.
 
 
     YUI.add('{mojit_name}', function(Y, NAME) {
-        // Module name is {mojit-name}
-        // Constructor for the Controller class.
-        Y.namespace('mojito.controllers')[NAME] = {
-
-            /**
-            * Method corresponding to the 'index' action.
-            * @param ac {Object} The ActionContext object
-            * that provides access to the Mojito API.
-            */
-            index: function(ac) {
-                ac.done({data: "Here is a string"});
-            },
-            // Other controller functions
-            someFunction: function(ac) {
-                ac.done("Hello");
-            },
-        };
-     // The requires array lists the YUI module dependencies
+      // Module name is {mojit-name}
+      // Constructor for the Controller class.
+      Y.namespace('mojito.controllers')[NAME] = {
+        /**
+        * Method corresponding to the 'index' action.
+        * @param ac {Object} The ActionContext object
+        * that provides access to the Mojito API.
+        */
+        index: function(ac) {
+          ac.done({data: "Here is a string"});
+        },
+        // Other controller functions
+        someFunction: function(ac) {
+          ac.done("Hello");
+        },
+      };
+      // The requires array lists the YUI module dependencies
     }, '0.0.1', {requires: []});
 
 
 ## Models ##
 
 Models are intended to closely represent business logic entities and contain code that 
-accesses and persists data. Mojito lets you create one or more models at the 
+access and persist data. Mojito lets you create one or more models at the 
 application and mojit level that can be accessed from controllers.
 
 ### Location ###
@@ -90,29 +89,29 @@ The model name is an arbitrary string defined by the developer.
 
 The example model below shows you the basic skeleton, which as you
 can see is similar to the controller:  a `YUI.add` statement to register the model, 
-a namespace statement, and a `requires` array for requiring dependencies. 
+a `namespace` statement, and a `requires` array for requiring dependencies. 
 
 
 `mojits/{mojit_name}/models/{model_name}.{affinity}.js`
 
     YUI.add('{mojit_name}Model{Model_name}', function(Y, NAME) {
-        // Models must register themselves in the
-        // Namespace for models
-        Y.namespace('mojito.models')[NAME] = {
-            // Optional init() method is given the
-            // mojit configuration information.
-            init: function(config) {
-                this.config = config;
-            },
-            // Model methods ideally are asynchronous, and
-            // thus need some way of notifying the caller
-            // when the method is done.
-            someMethod: function(foo, bar, callback) {
-                // ... get some data ...
-                callback(data);
-            }
-        };
-     // The requires array list the YUI module dependencies
+      // Models must register themselves in the
+      // Namespace for models
+      Y.namespace('mojito.models')[NAME] = {
+        // Optional init() method is given the
+        // mojit configuration information.
+        init: function(config) {
+          this.config = config;
+        },
+        // Model methods ideally are asynchronous, and
+        // thus need some way of notifying the caller
+        // when the method is done.
+        someMethod: function(foo, bar, callback) {
+          // ... get some data ...
+          callback(data);
+        }
+      };
+       // The requires array list the YUI module dependencies.
     }, '0.0.1', { requires:[] });
 
 
@@ -154,17 +153,22 @@ to show how they are related.
 
 In the `index` function of the `controller.server.js` below, when the method `ac.done` is
 called, the data is passed to the template `index.hb.html`.
+
     ...
         index: function(ac) {
-            ac.done({data: "Here is a string"});
+          // You can also pass in the name of the template that you
+          // would like to render as the second argument. The default is to render 
+          // the template with the same name as the function, so calling the 
+          // 'index' function would render 'index.hb.html'.
+          ac.done({data: "Here is a string"}, 'index');
         },
     ...
 
 The template `index.hb.html` below has the Handlebars expression `data` that
-will be replaced by the value passed to it from the controller: :
+will be replaced by the value passed to it from the controller: 
 
     <div id="{{mojit_view_id}}">
-          {{data}}
+      {{data}}
     </div>
 
 The value for the Handlebars expression `{{mojit_view_id}}` is supplied by

@@ -65,3 +65,5 @@ but also for defining mojit relationships. In this example
 ## Learn More ##
 
 * [Configuring Mojito](http://developer.yahoo.com/cocktails/mojito/docs/intro/mojito_configuring.html)
+* [Code Examples: Basic Configuring of Applications](http://developer.yahoo.com/cocktails/mojito/docs/code_exs/app_config.html)
+

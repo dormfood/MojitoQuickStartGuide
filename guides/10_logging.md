@@ -42,18 +42,18 @@ The server and client log settings have the following default values:
 ## Log Configuration ##
 
 All the values above are configurable through the 
-`yui.config object <../intro/mojito_configuring.html#yui_config>`_ in the 
-`application.json` file. In the example `application.json` below, the `yui.config` 
-object overrides the default for `logLevel`.::
+[yui.config object](http://developer.yahoo.com/cocktails/mojito/docs/intro/mojito_configuring.html#yui_config)
+in the `application.json` file. In the example `application.json` below, the `yui.config` 
+object overrides the default for `logLevel`.
 
     [
-        {
-            "settings": [ "master" ],
-            "yui": {
-                "config": {
-                    "debug": true,
-                    "logLevel": "error"
-            }
+      {
+        "settings": [ "master" ],
+        "yui": {
+          "config": {
+            "debug": true,
+            "logLevel": "error"
+          }
         },
         ...
     ]
@@ -61,25 +61,25 @@ object overrides the default for `logLevel`.::
 
 ## Recommended Logging Configuration for Production ##
 
-
 For production, we recommend that you use the `environment:production`
-context with the log configuration shown below::
+context with the log configuration shown below:
 
 
     [
-        {
-            "settings": [ "environment:production" ],
-            "yui": {
-                "config": {
-                    "debug": false,
-                    "logLevel": "none"
-                }
-            },
-            ...
-        }
+      ...
+      {
+        "settings": [ "environment:production" ],
+        "yui": {
+          "config": {
+            "debug": false,
+            "logLevel": "none"
+          }
+        },
+        ...
+      }
     ]
 
 ## Learn More ##
 
 * [Mojito: Logging](http://developer.yahoo.com/cocktails/mojito/docs/topics/mojito_logging.html)
-
+* [Code Examples: Simple Logging](http://developer.yahoo.com/cocktails/mojito/docs/code_exs/simple_logging.html)

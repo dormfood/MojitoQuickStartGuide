@@ -23,8 +23,7 @@ command.
 
 * The unit test YUI module should include the target module and the `mojito-test` 
   module in the `requires` array. The requires array includes the `mojito-test` 
-  module and the target module `HelloMojit`: :
-
+  module and the target module `HelloMojit`:
 
     { requires: [ 'mojito-test', 'HelloMojit' ] }
 

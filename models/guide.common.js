@@ -4,292 +4,329 @@
  * See the accompanying LICENSE file for terms.
  */
 
+/**
+Model for Mojito
+
+Models are intended to closely represent business logic entities and contain code that accesses and persists 
+data. Mojito lets you create one or more models at the application and mojit level that can be accessed from 
+controllers.
+For more info, visit: http://developer.yahoo.com/cocktails/mojito/docs/intro/mojito_mvc.html#models
+**/
+
+/*jslint nomen: true, stupid: true, regexp: true*/
 /*global YUI*/
 
-
+/**
+Fetches guide file names, titles, and contents via accessing file system.
+Used by @Shelf and @Read mojits.
+@class GuideModel
+**/
 YUI.add('GuideModel', function (Y, NAME) {
     'use strict';
+    var LIB_PATH,// Nodejs path library
+        LIB_FS,// Nodejs file system library
+        DIRNAME;// Path to the current directory
 
     /**
-     * Returns path to the data source.
-     * @return {String} path.
-     */
-    function getPath() {
-        var pathLib = require('path');
-        // In Node.js, __dirname contains the path to the current file
-        return pathLib.join(__dirname,'/../guides/');
-    }
+    Is used for library initializations in this example application.
 
-    /**
-     * Gets the titles of all the guides.
-     * @return {Array} An array with book titles in string.
-     */
-    function getGuides(callback) {
-        var fs = require('fs');
-
-        return fs.readdirSync(getPath());
-    }
-
-	/**
-     * Reads the proper title H1 title from a guide.
-     * @param {String} guide file name.
-     * @return {String} guide name.
-     */
-    function getGuideTitle(filename, callback) {
-        var fs = require('fs'),
-            content;
-
-        content = fs.readFileSync(getPath() + filename);
-        return fetchGuideTitle(String(content)).title; // Extract heading content
-    }
-
-	/**
-     * Gets book titles from a book pile.
-     * @param {Function} callback The callback function to invoke.
-     * @return {Array} objects with "name" of book titles.
-     */
-    function getBooks(callback) {
-        var self = this,
-            names = getGuides(),
-            books = [],
-            book = {};
-
-       	Y.each(names, function (name) {
-            var book = {};
-            if (name.match(/\.md$/)) { // Only catch the .md files
-                book.name = name.replace(/\.md$/, "");
-                book.title = getGuideTitle(name);
-                books.push(book);
-            }
-        });
-
-        callback(books);
+    @method init
+    @param {Object} config The configuration object.
+    **/
+    function init(config) {
+        LIB_PATH = require('path');
+        LIB_FS = require('fs');
+        // In Node.js, __dirname contains the path to the current file.
+        DIRNAME = __dirname;
     }
 
     /**
-     * Strip HTML tags from the content string provided.
-     * @param {String} content The content.
-     * @return {String} Plain text.
-     */
-    function stripTags(content) {
-        // Regex to take out HTML tags
-        return content.replace(/<[^>]>/gmi, ' ');
-    }
+    Is used for library initializations under test environment.
 
-    /**
-     * Paginate the content by sub-topics,
-     * then paginate them into either 16 lines long or 160 words long.
-     * @param {String} content The content.
-     * @return {Array.(String)} paginated content strings
-     */
-    function paginate(content) {
-        var restContent = content,
-            currentSection,
-            lines,
-            words,
-            pages = [],
-            newPage = true;  // if it's a start of a new page
-
-        // Topic divide (Every h3 tag)
-        while (restContent) {
-            // Grabbing all the contain from a h3 header (surrounded by ### in markdown)
-            currentSection = restContent.split(/\n###[^#]/)[0];
-
-            if (restContent.split(/\n###/)[1]) {// More stuff coming up
-                restContent = "###" + restContent.split(/\n###/).slice(1).join('\n###');
-            } else {// No more stuff. Terminate loop in the next iteration.
-                restContent = "";
-            }
-
-            if (!currentSection.match(/\w+/)) { // Skip empty Page
-                continue;
-            }
-
-            // Weight divide
-	        while (currentSection) {
-	            // 20 lines (divided by \n)
-	            lines = currentSection.split(/\n/g).slice(0, 20).join('\n');
-	            // 200 words (approximately divided by space)
-	            words = currentSection.split(/ /g).slice(0, 200).join(' ');
-	        
-	            if (lines.length < words.length) {
-                    // Delete fetched context from currentSection
-                    currentSection = currentSection.replace(lines, "");
-	                // Take 20 lines
-                    if (!lines.match(/\w+/g)) {// Empty Page
-                        continue;
-                    }
-                    if (newPage) {
-                        pages.push(lines);
-                        newPage = false;
-                    } else {
-                        pages.push("_continued from last page..._\n\n" + lines);
-                    }
-	            } else {
-                    // Delete fetched context from currentSection
-                    currentSection = currentSection.replace(words, "");
-	                // Take 200 words
-                    if (!words.match(/\w+/g)) {// Empty Page
-                        continue;
-                    }
-                    if (newPage) {
-                        pages.push(words);
-                        newPage = false;
-                    } else {
-                        pages.push("_continued from last page..._\n\n" + words);
-                    }
-	            }
-	        }
-            newPage = true;
+    @method init_test
+    @private
+    @param {Object} config The configuration object.
+    **/
+    function init_test(config) {
+        // Mocking the library for test purposes.
+        // Unit tests are run using "mojito test app app_root/".
+        // Make sure the attributes are set up correctly, otherwise don't set at all
+        if (config && config.test && config.test.libs) {
+            LIB_PATH = config.test.libs.lib_path;
+            LIB_FS = config.test.libs.lib_fs;
+            DIRNAME = config.test.libs.dirname;
         }
-
-        return pages;
     }
 
-	/**
-     * Reads the proper title H1 title from a guide.
-     * @param {String} guide content.
-     * @return {Object} guide title and remaining content.
-     */
-    function fetchGuideTitle(content) {
-        var title = String(content).match(/#+.*#+/)[0];
+    /**
+    Strips out HTML tags from the content string provided.
 
-        content = String(content).replace(title, "");
+    Example:
+     Input: "<html><body><p>Foo</p></body></html>"
+     Output: "Foo"
+
+    @method stripTags
+    @private
+    @param {String} content The content.
+    @return {String} Plain text.
+    **/
+    function stripTags(content) {
+        // Regex that removes HTML tags
+        return Y.Lang.trim(content.replace(/<\/?\w+[\s\S]*?>/gmi, ' '));
+    }
+
+    /**
+    Returns the path to the data source.
+    @method getPathToGuides
+    @private
+    @return {String} path to the data set.
+    **/
+    function getPathToGuides() {
+        // Use LIB_PATH.join() to join path with system default folder symbol.
+        return LIB_PATH.join(DIRNAME, '..', 'guides');
+    }
+
+    /**
+    Gets the filenames of all guides and sort by alphabetical order.
+    return callback([Array] An array with guide titles in string.)
+    @private
+    @method getGuidesFilenames
+    @param {Function} callback The callback function to invoke.
+    **/
+    function getGuidesFilenames(callback) {
+        var afterReaddir = function (err, dirArray) {
+                if (err) {
+                    throw {
+                        // Localize program generated text. See .js files under lang/
+                        name: Y.Intl.get('GuideModel').READ_DIR_ERROR_NAME,
+                        message: Y.Intl.get('GuideModel').READ_DIR_ERROR_MESSAGE
+                    };
+                }
+                // Sends back result
+                callback(dirArray.sort(function (item1, item2) {
+                    // Sorted by file name (alphabetical order)
+                    return item1.localeCompare(item2);
+                }));
+            };
+        // Use LIB_FS.readdir(path) to read all filenames for the guides
+        //   and returns them into an array
+        LIB_FS.readdir(getPathToGuides(), afterReaddir);
+    }
+
+    /**
+    Checks the existence of a file.
+    @method checkFilename
+    @private
+    @param {String} filename.
+    @param {Function} callback Function to callback.
+    **/
+    function checkFilename(filename, callback) {
+        // Generates path to the guide
+        var path = LIB_PATH.join(getPathToGuides(), filename);
+
+        // Use LIB_(FS|PATH).exists(filepath, callback) that will directly check the file existence
+        //   and send result to callback
+        // For older node version, exists() belongs to path library
+        if (LIB_FS.exists) {
+            LIB_FS.exists(path, callback);
+        } else {
+            LIB_PATH.exists(path, callback);
+        }
+    }
+
+    /**
+    Synchronously opens a file and return its content.
+    @method getContent
+    @private
+    @param {String} filename Name of the file.
+    @return {String} file content
+    **/
+    function getContent(filename) {
+        // Generates path to the guide
+        var path = LIB_PATH.join(getPathToGuides(), filename);
+
+        // Use LIB_FS.readFileSync(filepath, callback) and return file content. 'utf8' encoding will make sure
+        // we get back the result as String
+        return LIB_FS.readFileSync(path, 'utf8');
+    }
+
+    /**
+    Extracts the very first Header element from content.
+
+    Example:
+     Input:
+      "#Foo#\n
+      #Bar#"
+     Output:
+      {
+       title: "Foo"
+       content: "#Bar#"
+      }
+
+    @method separateGuideTitleFromContent
+    @private
+    @param {String} guide content.
+    @return {Object} guide title and remaining content.
+    */
+    function separateGuideTitleFromContent(content) {
+        // Grab the first line in (any) header format (#+ in markdowns)
+        var title = (content.match(/\s*#+.*\s*/) && content.match(/\s*#+.*\s*/)[0]) || "untitled",
+            // Set up the rest of content by extracting the title from content.
+            restContent = content.replace(title, "");
 
         return {
-                   title: title.replace(/#+/g, ""), // Extract heading content
-                   content: content
-               };
+            // Extract heading content (Without any # or newline)
+            title: title.replace(/#+|\n/g, ""),
+            content: restContent
+        };
     }
 
     /**
-     * Handle result data processing.
-     * @param {String} title Title
-     * @param {String} content Raw content
-     * @return {Array.<Object>} Content separated into pages with white spaces removed.
-     */
-    function processResponse(name, content) {
-        var pages,
-            i,
-            page,
-            list = [],
-            guide_title_result,
-            title = "",
-            error = null,
-            // Markdown requires node module installing. Please run "npm i" from project folder.
-            md = require("node-markdown").Markdown;
+    Gets filenames and titles of all guides from file system.
+    return callback([{
+                     filename: filename of the guide without .md
+                     title: title of the guide
+                    }, {...}, ...])
 
-        guide_title_result = fetchGuideTitle(content);
-        title = guide_title_result.title;
-        content = guide_title_result.content;
-        pages = paginate(String(content));
+    @method getGuides
+    @param {Function} callback The callback function to send in guides.
+    **/
+    function getGuides(callback) {
+        var returningArray = [],
+            afterGetAllFilenames = function (filenames) {
+                // Iterates through each filename
+                Y.each(filenames, function (filename) {
+                    var guide = {},
+                        content;
 
-        for (i in pages) {
-            if (pages.hasOwnProperty(i)) {
+                    // Only cares about the .md files
+                    if (filename.match(/\.md$/)) {
+                        guide.filename = filename.replace(/\.md$/, "");
+                        // Fetches the content, but we only need its title
+                        content = stripTags(getContent(filename));
+                        guide.title = separateGuideTitleFromContent(content).title;
+                        // Pushes to the resulting array
+                        returningArray.push(guide);
+                    }
+                });
 
-                page = {
-                    title: Y.Lang.trim(title),
-                    // Stript existing HTML tags, then convert into markdowns
-                    content: md(stripTags(pages[i]))
-                };
+                // Sends back result array
+                callback(returningArray);
+            };
 
-                if (page.title && page.content) {
-                    list.push(page);
-                } else {
-                    Y.log('skipping page ' + i + ': missing data', 'warn');
-                }
-            }
-        }
-
-        return list;
+        // Gets all filenames in an array
+        getGuidesFilenames(afterGetAllFilenames);
     }
 
     /**
-     * Reads a markdown file.
-     * @param {String} title Name of the topic.
-     * @param {Function} callback Function to callback.
-     */
-    function getContent(title, callback) {
-        var pathLib = require('path'),
-            fsLib = require('fs'),
-            // Generate path
-            path = pathLib.join(getPath(), title);
+    Gets content of the .md file.
+    return callback(error, {
+                            title: guide title,
+                            content: guide content
+                            })
 
-        fsLib.readFile(path, callback);
-    }
-
-    /**
-     * Checks the existence of a topic.
-     * @param {String} title Name of the topic.
-     * @param {Function} callback Function to callback.
-     */
-    function checkTitle(title, callback) {
-        var pathLib = require('path'),
-            fsLib = require('fs'),
-            // Generate path
-            path = pathLib.join(getPath(), title);
-
-        // For older node version, exists() belongs to path library
-        fsLib.exists ? fsLib.exists(path, callback) : pathLib.exists(path, callback);
-    }
-
-    /**
-     * Gets content of the .md file.
-     * @param {Object} feedmeta Metadata for the selected feed.
-     * @param {Function} callback The callback function to invoke.
-     */
-    function getBook(feedmeta, callback) {
-        var title = feedmeta.title + ".md", // .md file name
-            afterGetContent = function (err, content) {
-                var list = [],
-                    error = null;
-
-                // Error?
-                if (err) {
-                    error = 'Ooo, content is damaged in ' + title;
-                } else {
-                    list = processResponse(title, content);
-                }
-
-                // Pass feedmeta through.
-                callback(error, list);
-            },
-            afterCheckTitle = function (good) {
+    @method getGuide
+    @param {Object} guidemeta Metadata for the selected feed.
+    @param {Function} callback The callback function to invoke.
+    **/
+    function getGuide(guidemeta, callback) {
+        var filename = guidemeta.filename + ".md", // .md file name
+            fileContent,
+            fileObj,
+            afterCheckFile = function (good) {
                 var error = null;
                 if (good) {
-	                getContent(title, afterGetContent);
+                    // Starts getting the content
+                    fileContent = stripTags(getContent(filename));
+
+                    // Separate the title from content
+                    fileObj = separateGuideTitleFromContent(fileContent);
+
+                    // Sends back result
+                    callback(error, fileObj);
                 } else {
-                    error = 'Ooo, could not fetch content for ' + title;
+                    // Localizes program generated text. See .js files under lang/
+                    error = Y.Intl.get('GuideModel').ERROR_CONTENT_FETCH + ' ' + filename;
                     // Sends back error
                     callback(error);
                 }
-            }
+            };
 
-        // Check the existence of the topic
-        checkTitle(title, afterCheckTitle);
+        // Check the existence of the file
+        checkFilename(filename, afterCheckFile);
     }
 
     /**
-     * Fetch normalized RSS feed data as JSON via YQL.
-     * @class ReadModelBookContent
-     */
+    Finds the links to previous and next guide.
+    return callback(Filename of previous guide,
+                    Filename of next guide)
+
+    @method getAdjacentGuideFilenames
+    @param {String} filename Exact filename from file system.
+    @param {Function} callback The callback function to invoke.
+    */
+    function getAdjacentGuideFilenames(filename, callback) {
+        var fullFilename,
+            afterGetAllFilenames = function (allFilenames) {
+                var currentIndex,
+                    prevIndex,
+                    nextIndex,
+                    // Filter to keep only .md files left
+                    filteredFilenames = Y.Array.filter(allFilenames, function (filename) {
+                        return filename.match(/\.md$/);
+                    }),
+                    numOfGuides = filteredFilenames.length;
+
+                if (numOfGuides <= 1) {
+                    // Only 1 element, no prev and next
+                    callback(null, null);
+                } else {
+                    // Find the index of the current filename
+                    currentIndex = Y.Array.indexOf(filteredFilenames, fullFilename);
+
+                    if (currentIndex < 0) {
+                        // Filename not found!!
+                        callback(null, null);
+                    } else {
+                        // Fill in previous and next index
+                        prevIndex = currentIndex > 0 ? currentIndex - 1 : numOfGuides - 1;
+                        nextIndex = (currentIndex + 1) % numOfGuides;
+
+                        // Passback the filenames of the adjacent guides
+                        callback(filteredFilenames[prevIndex].replace(/\.md$/, ""), filteredFilenames[nextIndex].replace(/\.md$/, ""));
+                    }
+                }
+            };
+
+        // Restore filename with ".md"
+        fullFilename = filename + ".md";
+
+        // Gets filenames of all guides
+        getGuidesFilenames(afterGetAllFilenames);
+    }
+
+    /**
+    Register getGuide, getGuides, getAdjacentGuideFilenames, and init methods under controller.
+    "init" is called before every model method gets called
+    Keep all other private functions under "test" for unit testing.
+    **/
     Y.mojito.models[NAME] = {
-        getBook: getBook,
-        getBooks: getBooks,
+        getGuide: getGuide,
+        getGuides: getGuides,
+        getAdjacentGuideFilenames: getAdjacentGuideFilenames,
+        init: init,
         test: {
-            getPath: getPath,
-            processResponse: processResponse,
-            checkTitle: checkTitle,
+            init_test: init_test,
+            getPathToGuides: getPathToGuides,
+            checkFilename: checkFilename,
             getContent: getContent,
-            paginate: paginate,
             stripTags: stripTags,
-            fetchGuideTitle: fetchGuideTitle,
-            getGuides: getGuides
+            separateGuideTitleFromContent: separateGuideTitleFromContent,
+            getGuidesFilenames: getGuidesFilenames
         }
     };
 
 }, '0.0.1', {requires: [
     'mojito',
-    'yql',
-    'jsonp-url'
+    'intl'
 ]});

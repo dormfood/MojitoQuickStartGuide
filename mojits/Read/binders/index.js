@@ -4,6 +4,17 @@
  * See the accompanying LICENSE file for terms.
  */
 
+/**
+Binder for Mojito
+
+Each mojit you create can have some specific code called binders that is only deployed to the browser. 
+The code can perform the following three functions:
+    - allow event handlers to attach to the mojit DOM node
+    - communicate with other mojits on the page
+    - execute actions on the mojit that the binder is attached to
+
+For more info, visit: http://developer.yahoo.com/cocktails/mojito/docs/intro/mojito_binders.html
+**/
 
 /*jslint anon:true, sloppy:true*/
 /*global YUI*/
@@ -19,55 +30,17 @@ YUI.add('ReadIndexBinder', function(Y, NAME) {
         },
 
         /**
-         * Setup client-side event handlers.
-         * @param {Node} mojitNode The node for the mojit's outer div.
-         */
+        Setup client-side event handlers.
+        @param {Node} mojitNode The node for the mojit's outer div.
+        **/
         bind: function(mojitNode) {
-            var dotnode = mojitNode.one('div.nav'),
-                dotnodes = dotnode.all('span'),
-                viewnode = mojitNode.one('.main-sv'),
-                viewnodes = viewnode.all('li.item-sv'),
-                iframe = mojitNode.one('div.iframe'),
-                // TODO: JSLint won't let this pass.
-                //start = ~~this.mp.getFromUrl('start'),
-                start = parseInt(this.mp.getFromUrl('start'), 10) || 0,
-                self = this,
-                content = null;
 
-            // Remove the nav links, since presumably we have js at this point.
-            mojitNode.all('a.link-prev, a.link-next').addClass('hidden');
-
-            // Setup scrollview.
-            // @see http://yuilibrary.com/yui/docs/api/classes/ScrollView.html
-            Y.use('scrollview', 'scrollview-paginator', function(YY) {
-                var scrollview = new YY.ScrollView({
-                        srcNode: viewnode, // <ul> container for all stories.
-                        height: 748,
-                        width: 1023,
-                        flick: {
-                            preventDefault: function(e) {
-                                return YY.UA.gecko; // Prevent gecko drag.
-                            }
-                        },
-                        plugins: {
-                            fn: YY.Plugin.ScrollViewPaginator, // Snap to.
-                            cfg: {selector: 'li.item-sv'} // Story container.
-                        },
-                        render: true
-                    });
-
-                // When scrollview pages change, we update the dots.
-                scrollview.pages.on('indexChange', function updateDots(ev) {
-                    dotnodes.item(ev.prevVal).removeClass('selected');
-                    dotnodes.item(ev.newVal).addClass('selected');
-                });
-
-                // Pick a page.
-                scrollview.pages.set('index', start);
+            // Open all links in the guide in new tabs.
+            mojitNode.all('.content #desc a').on('click', function(evt) {
+                evt.preventDefault();
+                window.open(evt.target.get("href"), '_blank');
             });
 
-            // Show all dots.
-            dotnode.removeClass('hidden');
         }
     };
 
